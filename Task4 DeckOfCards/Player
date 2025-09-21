@@ -1,0 +1,21 @@
+namespace DeckOfCards;
+
+public class Player
+{
+    public List<Card> PlayerCards { get; set; } = new List<Card>();
+
+    public void PrintCards()
+    {
+        if (PlayerCards.Count > 0)
+        {
+            foreach (Card card in PlayerCards)
+            {
+                Console.WriteLine($"Ваши карты: {card}");
+            }
+        }
+        else
+        {
+            Console.WriteLine("У игрока нет карт!");
+        }
+    }
+}
