@@ -1,12 +1,10 @@
 namespace DeckOfCards;
 
-// Судя по всему, основная проблема была в том, что я использовал словарь, когда можно было более удобно использовать List
-
 public class Card
 {
-    public int CardId { get; set; }
-    public string Suit { get; set; }
-    public string Rank { get; set; }
+    internal int CardId { get; set; }
+    private string Suit { get; set; }
+    private string Rank { get; set; }
 
     public Card(string suit, string rank, int cardId)
     {
@@ -15,7 +13,7 @@ public class Card
         CardId = cardId;
     }
 
-    public override string ToString() // Подсказка чата
+    public override string ToString()
     {
         return $"ID: {CardId}, Масть: {Suit}, Ранг: {Rank}";
     }
@@ -23,54 +21,43 @@ public class Card
 
 public class DeckOfCards
 {
-    public Dictionary<int, Card> deckOfCards = new Dictionary<int, Card>();
+    Player _player;
+    public List<Card> _deckOfCards = new List<Card>();
 
-    public void CardReplacer()
+    public DeckOfCards(Player player)
     {
-        // Создаем копию ключей, так как нельзя изменять коллекцию во время итерации
-        var cardIds = deckOfCards.Keys.ToList();
-    
-        foreach (int cardId in cardIds)
+        _player = player;
+    }
+
+    public void DealCardsToPlayer()
+    {
+        if (_deckOfCards.Count == 0)
         {
-            if (deckOfCards.TryGetValue(cardId, out Card card))
-            {
-                _playerDeckOfCards.Add(cardId, card);
-                deckOfCards.Remove(cardId);
-                Console.WriteLine($"Карта {card} перемещена в вашу колоду.");
-            }
+            Console.WriteLine("В колоде нет карт!");
+            return;
         }
-    
+
+        // перемещаем все карты
+        foreach (var card in _deckOfCards.ToList()) // создаём копию, чтобы можно было удалять
+        {
+            _player.PlayerCards.Add(card);
+            _deckOfCards.Remove(card);
+            Console.WriteLine($"Карта {card} перемещена в вашу колоду.");
+        }
+
         Console.WriteLine("Все карты перемещены!");
     }
 
-    public void AddCard(string suit, string rank, int cardId) // Подсказка чата - до этого я сам написал этот мет -
-        // - од, но там получилась полнейшая жопа, и он мне его исправил, проблема была в томЮ что я что-то там напутал -
-        // - из-за чего, карты не выводились в консоль.
+    public void AddCard(string suit, string rank, int cardId)
     {
-        if (!deckOfCards.ContainsKey(cardId))
-        {
-            var newCard = new Card(suit, rank, cardId);
-            deckOfCards.Add(cardId, newCard);
-            Console.WriteLine($"Карта {newCard} добавлена.");
-        }
-        else
+        if (_deckOfCards.Any(c => c.CardId == cardId)) // проверяем по ID
         {
             Console.WriteLine($"Карта с ID {cardId} уже существует!");
+            return;
         }
+        var newCard = new Card(suit, rank, cardId);
+        _deckOfCards.Add(newCard);
+        Console.WriteLine($"Карта {newCard} добавлена.");
     }
-    public Dictionary<int, Card> _playerDeckOfCards = new Dictionary<int, Card>();
-    public void PrintCards() // Также, изначально сделал, но с проёбом, чат подправил этот метод.
-        {
-            if (_playerDeckOfCards.Count > 0)
-            {
-                foreach (var cardEntry in _playerDeckOfCards)
-                {
-                    Console.WriteLine($"Ваши карты: {cardEntry.Value}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("В колоде нет карт!");
-            }
-        }
+
 }
