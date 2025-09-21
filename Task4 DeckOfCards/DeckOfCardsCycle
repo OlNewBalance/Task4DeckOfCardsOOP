@@ -1,0 +1,34 @@
+namespace DeckOfCards;
+
+public class DeckOfCardsCycle
+{
+    DeckOfCards _deckOfCards;
+    Player _player;
+
+    public DeckOfCardsCycle(DeckOfCards deck, Player player)
+    {
+        _deckOfCards = deck;
+        _player = player;
+    }
+
+    public void Game()
+    {
+        Console.WriteLine("Перед вами колода карт, чтобы достать карты, нажмите ENTER");
+        if (Console.ReadKey().Key == ConsoleKey.Enter)
+        {
+            Console.WriteLine("Проверка 1");
+            if (_player.PlayerCards.Count == 0) ////////////////////////
+            {
+                Console.WriteLine("Проверка 2");
+                _deckOfCards.DealCardsToPlayer();
+            }
+
+            Console.WriteLine("13 карты были вытащены из колоды");
+            Console.WriteLine("Чтобы посмотреть карты, нажмите ENTER");
+            if (Console.ReadKey().Key == ConsoleKey.Enter)
+            {
+                _player.PrintCards();
+            }
+        }
+    }
+}
